@@ -1,7 +1,7 @@
-package myapp
+package main
 
 import (
-	appapi "github.com/budimanlai/go-api-template/internal/app"
+	appapi "github.com/budimanlai/midtrans/internal/app"
 	log "github.com/eqto/go-logger"
 	"github.com/eqto/service"
 )

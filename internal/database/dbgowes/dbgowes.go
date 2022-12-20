@@ -1,11 +1,4 @@
-/*
- * @Author: @eqto
- * @Date: 2022-06-20 11:38:57
- * @Last Modified by: @eqto
- * @Last Modified time: 2022-06-22 20:25:24
- */
-
-package dblogistik
+package dbgowes
 
 import (
 	"errors"

@@ -8,9 +8,10 @@
 package route
 
 import (
+	"github.com/budimanlai/midtrans/internal/app/route/midtrans"
 	"github.com/eqto/api-server"
 )
 
 func SetServer(svr *api.Server) {
-
+	svr.PostAction(midtrans.Callback)
 }
