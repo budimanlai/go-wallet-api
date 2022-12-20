@@ -30,7 +30,11 @@ func Callback(ctx api.Context) error {
 	// check apakah order_id ada di database?
 	model, e := tx.Get(`SELECT * FROM midtrans WHERE order_id = ?`, orderId)
 	if e != nil {
-		return ctx.StatusBadRequest("Order not found")
+		return ctx.StatusBadRequest(e.Error())
+	}
+
+	if model == nil {
+		return ctx.StatusBadRequest("Order id not found")
 	}
 
 	transactionStatusResp, e := midtrans_lib.Midtrans.CheckTransaction(orderId)
