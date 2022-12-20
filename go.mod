@@ -16,15 +16,6 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/google/uuid v1.3.0 // indirect
-	github.com/klauspost/compress v1.15.0 // indirect
-	github.com/radovskyb/watcher v1.0.7 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.37.0 // indirect
-)
-
-require (
 	github.com/eqto/go-json v0.4.1
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/midtrans/midtrans-go v1.3.6
