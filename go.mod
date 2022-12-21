@@ -13,6 +13,15 @@ require (
 	github.com/eqto/service v0.1.6
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/pkg/errors v0.9.1
+	github.com/valyala/fasthttp v1.37.0
+)
+
+require (
+	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/google/uuid v1.3.0 // indirect
+	github.com/klauspost/compress v1.15.0 // indirect
+	github.com/radovskyb/watcher v1.0.7 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
 )
 
 require (

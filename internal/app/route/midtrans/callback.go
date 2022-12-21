@@ -2,9 +2,11 @@ package midtrans
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 
 	wallet "github.com/budimanlai/gowes_wallet_lib"
+	"github.com/budimanlai/midtrans/internal/app/library"
 	"github.com/budimanlai/midtrans/internal/midtrans_lib"
 	"github.com/eqto/api-server"
 	"github.com/eqto/go-json"
@@ -112,29 +114,41 @@ func Callback(ctx api.Context) error {
 			return ctx.StatusBadRequest(e.Error())
 		}
 
-		client := json.Object{
-			`product_id`:        orderId,
-			`order_id`:          orderId,
-			`merchant_trx_id`:   model.String(`merchant_trx_id`),
-			`net_amount`:        net_amount,
-			`fee_amount`:        fee_amount,
-			`gross_amount`:      gross_amount,
-			`status`:            `success`,
-			`callback_response`: transactionStatusResp,
-		}
-
 		if transactionStatusResp.FraudStatus == "accept" && transactionStatusResp.TransactionStatus == "settlement" {
 			description := "Buy Semolis Package"
 
 			// update balance
-			e := wallet.AddFund(tx, model.Int("merchant_id"), model.Int("internal_trx_id"),
+			e := wallet.AddFund(tx, model.Int("merchant_id"), model.String("internal_trx_id"),
 				model.String("nasabah_id"), net_amount, description, model.Int("id"))
 			if e != nil {
 				return ctx.StatusBadRequest(e.Error())
 			}
+
+			url_notif, e := library.GetMerchantURL(tx, model.Int("merchant_id"))
+			if e != nil {
+				fmt.Println(e.Error())
+			}
+
+			if len(url_notif) != 0 {
+				form := url.Values{}
+				form.Add("product_id", orderId)
+				form.Add("user_id", model.String("nasabah_id"))
+				form.Add("trx_id", model.String("merchant_trx_id"))
+				form.Add("amount", strconv.Itoa(net_amount))
+				form.Add("datetime", transactionStatusResp.TransactionTime)
+				form.Add("type", transactionStatusResp.PaymentType)
+				form.Add("trx_status", "success")
+
+				_, e = library.SendNotif(url_notif, form)
+				if e != nil {
+					fmt.Println("Error client:", e.Error())
+				}
+			}
 		}
 
-		return ctx.Write(client)
+		return ctx.Write(json.Object{
+			`message`: `OK`,
+		})
 	}
 	return ctx.Write(json.Object{
 		`message`: `Failed to checkt tranaction status`,
