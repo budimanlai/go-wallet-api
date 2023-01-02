@@ -13,5 +13,5 @@ import (
 )
 
 func SetServer(svr *api.Server) {
-	svr.PostAction(midtrans.Callback)
+	svr.Post("/callback").AddAction(midtrans.Callback)
 }
