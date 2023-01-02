@@ -39,6 +39,13 @@ func Callback(ctx api.Context) error {
 		return ctx.StatusBadRequest("Order id not found")
 	}
 
+	// check apakah sudah pernah sukses?
+	if model.String("fraud_status") == "accept" && model.String("transaction_status") == "settlement" {
+		return ctx.Write(json.Object{
+			`message`: `OK. Already update`,
+		})
+	}
+
 	transactionStatusResp, e := midtrans_lib.Midtrans.CheckTransaction(orderId)
 	if e != nil {
 		//fmt.Println("Error")
@@ -64,13 +71,6 @@ func Callback(ctx api.Context) error {
 			// TODO set transaction status on your databaase to 'pending' / waiting payment
 		}
 
-		// check apakah sudah pernah sukses?
-		if model.String("fraud_status") == "accept" && model.String("transaction_status") == "settlement" {
-			return ctx.Write(json.Object{
-				`message`: `OK. Already update`,
-			})
-		}
-
 		fee_amount := 5000
 		gross_amount, e := strconv.ParseFloat(transactionStatusResp.GrossAmount, 64)
 		if e != nil {
@@ -81,6 +81,11 @@ func Callback(ctx api.Context) error {
 		raw_json := json.Object{
 			`midtrans`: transactionStatusResp,
 		}
+
+		if transactionStatusResp.StatusCode == "404" {
+			return ctx.StatusBadRequest(transactionStatusResp.StatusMessage)
+		}
+
 		// update record
 		_, e = tx.Exec(`UPDATE midtrans SET fraud_status = ?, 
 			transaction_status = ?, 
