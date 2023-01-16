@@ -1,7 +1,7 @@
 package main
 
 import (
-	appapi "github.com/budimanlai/midtrans/internal/app"
+	appapi "github.com/budimanlai/go-wallet-api/internal/app"
 	log "github.com/eqto/go-logger"
 	"github.com/eqto/service"
 )

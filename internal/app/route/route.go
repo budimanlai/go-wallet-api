@@ -8,10 +8,14 @@
 package route
 
 import (
-	"github.com/budimanlai/midtrans/internal/app/route/midtrans"
+	"github.com/budimanlai/go-wallet-api/internal/app/route/account"
+	"github.com/budimanlai/go-wallet-api/internal/app/route/balance"
 	"github.com/eqto/api-server"
 )
 
 func SetServer(svr *api.Server) {
-	svr.Post("/callback").AddAction(midtrans.Callback)
+	svr.PostAction(account.Register)
+
+	svr.PostAction(balance.Get).Secure()
+	svr.PostAction(balance.Transfer).Secure()
 }
